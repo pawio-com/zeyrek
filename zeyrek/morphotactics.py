@@ -3570,7 +3570,7 @@ class SearchPath:
             tail,
             stem_transition.to_,
             morphemes_,
-            stem_transition.attrs,
+            set(stem_transition.attrs),
             stem_transition.to_.terminal,
         )
 
