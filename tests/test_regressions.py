@@ -72,10 +72,22 @@ def test_everyday_spelling_without_voicing(analyzer, word, lemma):
     assert lemma in lemmas(analyzer, word)
 
 
-def test_analyze_word_needs_no_tokenizer(analyzer, monkeypatch):
-    monkeypatch.setitem(sys.modules, "nltk", None)
-    assert "dava" in {parse.lemma for parse in analyzer.analyze_word("davacının")}
-    assert [parse.lemma for parse in analyzer.analyze_word("xqzt")] == ["Unk"]
+def test_analyze_word_needs_no_tokenizer():
+    code = ("import sys; sys.modules['nltk'] = None; from zeyrek import MorphAnalyzer; analyzer = MorphAnalyzer(); "
+            "print(sorted({p.lemma for p in analyzer.analyze_word('davacının')}), "
+            "[p.lemma for p in analyzer.analyze_word('xqzt')])")
+    output = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, check=True).stdout
+    assert "'dava'" in output and "['Unk']" in output
+
+
+@pytest.mark.parametrize("word", ["Ankara'da", "Ankara’da"])
+def test_analyze_word_drops_apostrophes(analyzer, word):
+    assert "Ankara" in {parse.lemma for parse in analyzer.analyze_word(word)}
+
+
+@pytest.mark.parametrize("word", ["olacak", "gelecek", "okuyacak", "yapacak", "edilecek"])
+def test_future_tense_survives_a_suffix_that_ends_the_word(analyzer, word):
+    assert any("Fut+A3sg" in parse.formatted for parse in analyzer.analyze_word(word))
 
 
 def test_unknown_word_gives_one_entry(analyzer):

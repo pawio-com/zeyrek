@@ -40,7 +40,7 @@ class Parse(NamedTuple):
 def _normalize(word: str) -> str:
     word = tr.normalize_circumflex(tr.lower(word))
     # TODO: Decide what to do with apostrophes
-    word = word.replace("'", "")
+    word = word.replace("'", "").replace("’", "")
     return word
 
 
