@@ -91,3 +91,9 @@ def test_instrumental_after_a_hard_consonant(analyzer, word, lemma):
 @pytest.mark.parametrize("word, lemma", [("kitabla", "kitap"), ("ayağla", "ayak"), ("bıçağla", "bıçak")])
 def test_instrumental_after_a_softened_consonant_is_rejected(analyzer, word, lemma):
     assert lemma not in {parse.lemma for parse in analyzer.analyze_word(word)}
+
+
+@pytest.mark.parametrize("word, lemma", [("müteahhitin", "müteahhit"), ("müteahhite", "müteahhit"),
+                                         ("keşife", "keşif"), ("müdafiinin", "müdafii")])
+def test_everyday_spelling_of_court_words(analyzer, word, lemma):
+    assert lemma in {parse.lemma for parse in analyzer.analyze_word(word) if parse.pos != "Unk"}
