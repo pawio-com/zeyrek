@@ -11,6 +11,7 @@ from zeyrek.attributes import (
     RootAttribute,
     SecondaryPos,
     calculate_phonetic_attributes,
+    _cached_phonetic_attributes,
 )
 from zeyrek.conditions import (
     Condition,
@@ -3439,11 +3440,14 @@ def generate_surface(
     transition: SuffixTransition, phonetic_attributes: set[PhoneticAttribute]
 ) -> str:
     root_attributes = phonetic_attributes
+    root_attributes_key = None
+    suffix_has_vowel = False
     index = 0
     result = []
     for token in transition.token_list:
-        phonetic_attributes = (calculate_phonetic_attributes("".join(result), tuple(root_attributes))
-                               if result else root_attributes)
+        if suffix_has_vowel and token.type_ in ("A_VOWEL", "I_VOWEL"):
+            root_attributes_key = root_attributes_key or frozenset(root_attributes)
+            phonetic_attributes = _cached_phonetic_attributes("".join(result), root_attributes_key)
         if token.type_ == "LETTER":
             result.append(token.letter)
         elif token.type_ == "A_VOWEL":
@@ -3482,6 +3486,7 @@ def generate_surface(
         elif token.type_ in ["LAST_VOICED", "LAST_NOT_VOICED"]:
             ld = token.letter
             result.append(ld)
+        suffix_has_vowel = suffix_has_vowel or (bool(result) and result[-1] in tr.vowels_lower_set)
         index += 1
     return "".join(result)
 
