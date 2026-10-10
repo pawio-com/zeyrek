@@ -56,7 +56,7 @@ class RuleBasedAnalyzer:
                     and PhoneticAttribute.CannotTerminate
                     not in path.phonetic_attributes
                 ):
-                    logger.warning(f"APPENDING RESULT: {path}")
+                    logger.debug(f"APPENDING RESULT: {path}")
                     result.append(path)
                     continue
                 # Creates new paths with outgoing and matching transitions.
