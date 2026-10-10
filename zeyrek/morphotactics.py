@@ -3438,9 +3438,12 @@ class SurfaceTransition:
 def generate_surface(
     transition: SuffixTransition, phonetic_attributes: set[PhoneticAttribute]
 ) -> str:
+    root_attributes = phonetic_attributes
     index = 0
     result = []
     for token in transition.token_list:
+        phonetic_attributes = (calculate_phonetic_attributes("".join(result), tuple(root_attributes))
+                               if result else root_attributes)
         if token.type_ == "LETTER":
             result.append(token.letter)
         elif token.type_ == "A_VOWEL":
