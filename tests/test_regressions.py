@@ -80,3 +80,14 @@ def test_analyze_word_needs_no_tokenizer(analyzer, monkeypatch):
 
 def test_unknown_word_gives_one_entry(analyzer):
     assert len(analyzer.analyze("xqzt ev")) == 2
+
+
+@pytest.mark.parametrize("word, lemma", [("kitapla", "kitap"), ("bıçakla", "bıçak"), ("ayakla", "ayak"),
+                                         ("amaçla", "amaç"), ("panikle", "panik")])
+def test_instrumental_after_a_hard_consonant(analyzer, word, lemma):
+    assert any(parse.lemma == lemma and ":Ins" in parse.formatted for parse in analyzer.analyze_word(word))
+
+
+@pytest.mark.parametrize("word, lemma", [("kitabla", "kitap"), ("ayağla", "ayak"), ("bıçağla", "bıçak")])
+def test_instrumental_after_a_softened_consonant_is_rejected(analyzer, word, lemma):
+    assert lemma not in {parse.lemma for parse in analyzer.analyze_word(word)}

@@ -3375,7 +3375,7 @@ class SuffixTransition(MorphemeTransition):
         if lower.startswith(">") or not first_char_is_vowel:
             c = not_have(PhoneticAttribute.ExpectsVowel)
 
-        if (lower.startswith("+") and tr.is_lower(lower[1])) or first_char_is_vowel:
+        if (lower.startswith("+") and len(lower) > 2 and tr.is_vowel(lower[2])) or first_char_is_vowel:
             c = not_have(PhoneticAttribute.ExpectsConsonant)
 
         if c is not None:
