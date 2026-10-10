@@ -839,7 +839,7 @@ class StemTransitionsMapBased:
         modified_attrs = original_attrs.copy()
         modified_root_state_value: "MorphemeState | None" = None
         unmodified_root_state = None
-        for attr in dict_item.attributes:
+        for attr in sorted(dict_item.attributes, key=lambda attribute: attribute.value):
             if attr == RootAttribute.Voicing:
                 last = dict_item.pronunciation[-1]
                 voiced = tr.voice(last)
