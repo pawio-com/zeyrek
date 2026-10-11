@@ -109,3 +109,14 @@ def test_instrumental_after_a_softened_consonant_is_rejected(analyzer, word, lem
                                          ("keşife", "keşif"), ("müdafiinin", "müdafii")])
 def test_everyday_spelling_of_court_words(analyzer, word, lemma):
     assert lemma in {parse.lemma for parse in analyzer.analyze_word(word) if parse.pos != "Unk"}
+
+
+@pytest.mark.parametrize("word, lemma", [("alçağa", "alçak"), ("ufağı", "ufak"), ("yumuşağı", "yumuşak"),
+                                         ("çabuğu", "çabuk")])
+def test_adjectives_get_voicing(analyzer, word, lemma):
+    assert lemma in {parse.lemma for parse in analyzer.analyze_word(word)}
+
+
+@pytest.mark.parametrize("word", ["bozuku", "ortakı", "yumuşakı"])
+def test_unvoiced_adjective_before_a_vowel_is_rejected(analyzer, word):
+    assert [parse.lemma for parse in analyzer.analyze_word(word)] == ["Unk"]

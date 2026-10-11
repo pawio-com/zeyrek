@@ -364,7 +364,7 @@ def infer_morphemic_attributes(word: str, pos_data, attrs: "set[RootAttribute] |
             result.add(RootAttribute.Passive_In)
         if last_char_is_vowel or last in ['l', 'r'] and vowel_count > 1:
             result.add(RootAttribute.Causative_t)
-    elif pos_data.primary_pos.value in ['Noun', 'Adjective', 'Duplicator']:
+    elif pos_data.primary_pos in (PrimaryPos.Noun, PrimaryPos.Adjective, PrimaryPos.Duplicator):
         # if a noun or adjective has more than one syllable and last letter is a stop consonant, add voicing.
         if vowel_count > 1 \
             and tr.is_voiceless_stop_consonant(last) \
